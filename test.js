@@ -261,7 +261,39 @@ describe("Graph", function() {
       assert.deepStrictEqual(graph.lowestCommonAncestors("a", "a"), ["a"]);
       assert.deepStrictEqual(graph.lowestCommonAncestors("a", "b"), ["b"]);
       assert.deepStrictEqual(graph.lowestCommonAncestors("a", "c"), ["d", "e"]);
+      assert.deepStrictEqual(graph.lowestCommonAncestors("c", "a"), ["d", "e"]);
       assert.deepStrictEqual(graph.lowestCommonAncestors("a", "f"), []);
+    });
+
+    it("Should compute lowest common ancestors 2.", function (){
+      const formats = new Graph()
+      formats.addNode('date-time')
+      formats.addNode('date')
+      formats.addNode('time')
+      formats.addNode('email')
+      formats.addNode('idn-email')
+      formats.addNode('hostname')
+      formats.addNode('idn-hostname')
+      formats.addNode('ipv4')
+      formats.addNode('ipv6')
+      formats.addNode('uri')
+      formats.addNode('uri-reference')
+      formats.addNode('iri')
+      formats.addNode('iri-reference')
+      formats.addNode('uri-template')
+      formats.addNode('json-pointer')
+      formats.addNode('relative-json-pointer')
+      formats.addNode('regex')
+      
+      formats.addEdge('email', 'idn-email')
+      formats.addEdge('hostname', 'idn-hostname')
+      formats.addEdge('uri', 'uri-reference')
+      formats.addEdge('uri', 'iri')
+      formats.addEdge('iri', 'iri-reference')
+      formats.addEdge('uri-reference', 'iri-reference')
+      formats.addEdge('iri-reference', 'uri-template')
+
+      assert.deepStrictEqual(formats.lowestCommonAncestors("iri", "uri"), ["iri"]);
     });
   });
 

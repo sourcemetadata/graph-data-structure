@@ -195,6 +195,7 @@ module.exports = function Graph(serialized){
 
     var node1Ancestors = [];
     var lcas = [];
+    var lcaLevel = null;
 
     function CA1Visit(visited, node){
       if(!visited[node]){
@@ -212,21 +213,26 @@ module.exports = function Graph(serialized){
       }
     }
 
-    function CA2Visit(visited, node){
+    function CA2Visit(visited, node, level){
       if(!visited[node]){
         visited[node] = true;
         if (node1Ancestors.indexOf(node) >= 0) {
-          lcas.push(node);
-        } else if (lcas.length == 0) {
+          if (lcaLevel === null || level === lcaLevel) {
+            lcaLevel = level;
+            lcas.push(node);
+          } else if (level < lcaLevel) {
+            lcas = [node];
+          }
+        } else if (lcaLevel === null) {
           adjacent(node).forEach(node => {
-            CA2Visit(visited, node);
+            CA2Visit(visited, node, level + 1);
           });
         }
       }
     }
 
     if (CA1Visit({}, node1)) { // No shortcut worked
-      CA2Visit({}, node2);
+      CA2Visit({}, node2, 0);
     }
 
     return lcas;
